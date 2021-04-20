@@ -1,5 +1,7 @@
 // ⭐️ Example Challenge START ⭐️
 
+// import { template } from "@babel/core";
+
 /**Example Task : processFirstItem()
  * This example shows how you might go about solving the rest of the tasks
  * 
@@ -28,20 +30,32 @@ console.log(processFirstItem(['foo','bar'],function(str){return str+str}));
   Study the code for counter1 and counter2, then answer the questions below.
   
   1. What is the difference between counter1 and counter2?
-  
+
+  1a counter 2 is a function that returns the global variable count incremented by one.
+
+  1b counter 1 is a function that has a local variable count. It returns the function definition of counter.
+
   2. Which of the two uses a closure? How can you tell?
-  
-  3. In what scenario would the counter1 code be preferable? In what scenario would 
-     counter2 be better?  
+
+  Counter one is using a closure. We know this because we're able to access the local variable of counterMaker inside the counter function.
+
+  3. In what scenario would the counter1 code be preferable? In what scenario would counter2 be better?  
+
+counter one is preferable if we want to keep count as a variable available.
 */
 
 // counter1 code
 function counterMaker() {
+  
   let count = 0;
+
   return function counter() {
    return count++;
   }
+
 }
+
+console.log(counterMaker())
 
 const counter1 = counterMaker();
 
@@ -62,10 +76,9 @@ Use the inning function below to do the following:
 NOTE: This will be a callback function for the tasks below
 */
 
-function inning(/*Code Here*/){
-    /*Code Here*/
+function inning(){
+    return Math.floor(Math.random() * Math.floor(3));
 }
-
 
 /* ⚾️⚾️⚾️ Task 3: finalScore() ⚾️⚾️⚾️
 Use the finalScore function below to do the following:
@@ -81,27 +94,49 @@ Use the finalScore function below to do the following:
 }
 */ 
 
-function finalScore(/*code Here*/){
-  /*Code Here*/
+function finalScore(inningCb, number){
+  let homeScore = 0;
+  let awayScore = 0;
+
+  for(let i = 0; i < number; i++){
+
+    homeScore = homeScore + inningCb();
+    awayScore = awayScore + inningCb();
+  }
+
+  return {
+    Home: homeScore,
+    Away: awayScore
+  }
 }
 
 /* ⚾️⚾️⚾️ Task 4: getInningScore() ⚾️⚾️⚾️
 Use the getInningScore() function below to do the following:
   1. Receive a callback function - you will pass in the inning function from task 2 as your argument 
+
   2. Return an object with a score for home and a score for away that populates from invoking the inning callback function */
 
-function getInningScore(/*Your Code Here */) {
-  /*Your Code Here */
-}
+function getInningScore(callback) {
 
+  const score = {
+    "Home": callback(),
+    "Away": callback()
+  }
+  
+  return score
+}
 
 /* ⚾️⚾️⚾️ Task 5: scoreboard() ⚾️⚾️⚾️
 Use the scoreboard function below to do the following:
-  1. Receive the callback function `getInningScore` from Task 4
-  2. Receive the callback function `inning` from Task 2
-  3. Receive a number of innings to be played
-  4. Return an array where each of it's index values equals a string stating the
+  1. Receive the callback function `getInningScore` from Task 4 ✅
+  2. Receive the callback function `inning` from Task 2 ✅
+  3. Receive a number of innings to be played ✅
+
+  4. Return an array where each of its index values equals a string stating the
   Home and Away team's scores for each inning.  Not the cummulative score.
+
+  step1. use GetInningScore
+
   5. If there's a tie at the end of the innings, add this message containing the score to the end of the array:  "This game will require extra innings: Away 12 - Home 12"  (see tie example below)
      If there isn't a tie, add this message to the end of the array: "Final Score: Away 13 - Home 11"  (see no tie example below)
   
@@ -136,11 +171,20 @@ Use the scoreboard function below to do the following:
 ]  
   */
 
-function scoreboard(/* CODE HERE */) {
-  /* CODE HERE */
+function scoreboard(getInningCB, inningCB, innings) {
+
+  const scores = []
+
+  for (let i = 1; i < innings + 1; i++) {
+    let obj = getInningCB(inningCB)
+
+    scores.push(`Inning ${i}: Home: ${obj.Home} - Home ${obj.Away}`)
+  }
+
+  return scores
 }
 
-
+console.log(scoreboard(getInningScore, inning, 20))
 
 
 /* 🛑🛑🛑🛑🛑 Please do not modify anything below this line 🛑🛑🛑🛑🛑 */
@@ -148,6 +192,7 @@ function foo(){
   //console.log('its working');
   return 'bar';
 }
+
 export default{
   foo,
   processFirstItem,
